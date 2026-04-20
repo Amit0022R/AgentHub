@@ -5,8 +5,7 @@ import {
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
-import Footer from '../components/Footer'
-import Header from '../components/Header'
+
 
 import ClerkProvider from '../integrations/clerk/provider'
 
@@ -15,6 +14,8 @@ import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
 import appCss from '../styles.css?url'
 
 import type { QueryClient } from '@tanstack/react-query'
+import Navbar from '#/components/Navbar'
+import Crosshair from '#/components/Crosshair'
 
 interface MyRouterContext {
   queryClient: QueryClient
@@ -33,7 +34,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'AgentHub',
+      },
+      {
+        name: 'description',
+        content: "Build, share, and operate reusable AI agent skills with a route-driven system."
       },
     ],
     links: [
@@ -48,31 +53,43 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-        <HeadContent />
-      </head>
-      <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
-        <ClerkProvider>
-          <Header />
-          {children}
-          <Footer />
-          <TanStackDevtools
-            config={{
-              position: 'bottom-right',
-            }}
-            plugins={[
-              {
-                name: 'Tanstack Router',
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-              TanStackQueryDevtools,
-            ]}
-          />
-        </ClerkProvider>
-        <Scripts />
-      </body>
-    </html>
-  )
+			<html lang="en" suppressHydrationWarning>
+				<head>
+					{/* biome-ignore lint/security/noDangerouslySetInnerHtml */}
+					<script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+					<HeadContent />
+				</head>
+				<body className="font-sans antialiased wrap-anywhere">
+					<ClerkProvider>
+						<div id="root-layout">
+							<header>
+								<div className="frame">
+									<Navbar />
+									<Crosshair />
+									<Crosshair />
+								</div>
+							</header>
+
+							<main>
+								<div className="frame">{children}</div>
+							</main>
+						</div>
+
+						<TanStackDevtools
+							config={{
+								position: "bottom-right",
+							}}
+							plugins={[
+								{
+									name: "Tanstack Router",
+									render: <TanStackRouterDevtoolsPanel />,
+								},
+								TanStackQueryDevtools,
+							]}
+						/>
+					</ClerkProvider>
+					<Scripts />
+				</body>
+			</html>
+		);
 }
